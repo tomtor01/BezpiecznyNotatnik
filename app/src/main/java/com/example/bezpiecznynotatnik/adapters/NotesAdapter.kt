@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 class NotesAdapter(
     private val decryptedNotes: MutableList<String> = mutableListOf(),
     private val originalNotes: MutableList<Note> = mutableListOf(),
-    private val onEditNote: (Note) -> Unit ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
+    private val onViewNote: (Note) -> Unit ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_note, parent, false)
@@ -24,7 +24,7 @@ class NotesAdapter(
         holder.bind(decryptedNotes[position])
 
         holder.itemView.setOnClickListener {
-            onEditNote(note)
+            onViewNote(note)
         }
     }
     override fun getItemCount() = decryptedNotes.size

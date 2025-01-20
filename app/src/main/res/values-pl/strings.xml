@@ -8,7 +8,7 @@
     <string name="log_in_text">Zaloguj się</string>
     <string name="enter_new_note">Napisz coś…</string>
     <string name="save_note">Zapisz notatkę</string>
-    <string name="delete_message">Usuń notatkę</string>
+    <string name="delete_note">Usuń</string>
     <string name="logout">Wyjście</string>
     <string name="no_messages">Brak notatek</string>
     <string name="set_password">Ustaw hasło</string>
@@ -60,7 +60,7 @@
     <string name="enable_biometric_authentication">Włącz uwierzytelnianie biometryczne</string>
     <string name="key_invalidated">Klucz biometryczny unieważniony. Wpisz hasło aby wygenerować nowy klucz.</string>
     <string name="feedback">Feedback</string>
-    <string name="send_feedback">Wyślij feedback</string>
+    <string name="send_feedback">Podziel się opinią</string>
     <string-array name="language_names">
         <item>English</item>
         <item>Polski</item>

@@ -93,7 +93,7 @@ class SettingsFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
-        initializeLanguageSelection(settingsList.last())
+        initializeLanguageSelection(settingsList.component3())
     }
 
     private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

@@ -44,7 +44,7 @@ class NotesFragment : Fragment() {
 
     private fun loadNotes() {
         lifecycleScope.launch {
-            val notes = noteDao.getAllNotes()
+            val notes = noteDao.getAllNotes().sortedByDescending { it.id }
 
             val decryptedNotes = notes.map { note ->
                 try {
@@ -60,11 +60,18 @@ class NotesFragment : Fragment() {
             adapter = NotesAdapter(
                 decryptedNotes.toMutableList(),
                 notes.toMutableList(),
-                onEditNote = { note ->
-                    val action = NotesFragmentDirections.actionNavNotesViewToNavEditNote(
-                        note.id, decryptedNotes[notes.indexOf(note)]
-                    )
-                    findNavController().navigate(action)
+                onViewNote = { note ->
+//                    val action = NotesFragmentDirections.actionNavNotesViewToNavEditNote(
+//                        note.id, decryptedNotes[notes.indexOf(note)]
+//                    )
+//                    findNavController().navigate(action)
+                    val displayNoteFragment = DisplayNoteFragment().apply {
+                        arguments = Bundle().apply {
+                            putInt("noteId", note.id)
+                            putString("noteContent", decryptedNotes[notes.indexOf(note)])
+                        }
+                    }
+                    displayNoteFragment.show(parentFragmentManager, "DisplayNoteFragment")
                 }
             )
 

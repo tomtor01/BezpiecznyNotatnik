@@ -56,8 +56,8 @@ abstract class NavigationController : AppCompatActivity() {
                     )
                     true
                 }
-                R.id.nav_create -> {
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.nav_create)
+                R.id.nav_noteInput -> {
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.nav_noteInput)
                     true
                 }
                 R.id.nav_settings -> {

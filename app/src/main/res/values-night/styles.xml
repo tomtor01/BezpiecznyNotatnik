@@ -47,6 +47,8 @@
         <item name="colorSurfaceContainerLowest">@color/md_theme_surfaceContainerLowest</item>
         <item name="colorSurfaceContainerLow">@color/md_theme_surfaceContainerLow</item>
         <item name="colorSurfaceContainer">@color/md_theme_background</item>          <!-- label and navigation view color -->
+
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="AppTheme.Dialog" parent="Theme.Material3.Dark.Dialog.Alert">
@@ -60,4 +62,5 @@
         <item name="android:popupBackground">@color/md_theme_surface</item>
         <item name="android:textColor">@color/md_theme_onSurface</item>
     </style>
+
 </resources>

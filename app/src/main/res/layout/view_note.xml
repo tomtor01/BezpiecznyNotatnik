@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/primary_layer"
+    android:background="@drawable/primary_layer_clickable"
     android:padding="16dp"
     android:layout_margin="8dp">
 
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:theme="@style/AppTheme"
-        android:textColor="@color/md_theme_onSurfaceVariant"
+        android:textColor="@color/md_theme_onSurface"
         android:maxLines="7"
         android:textSize="16sp"
         android:paddingHorizontal="8dp" />

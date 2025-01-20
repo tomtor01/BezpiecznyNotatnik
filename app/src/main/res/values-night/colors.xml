@@ -48,6 +48,10 @@
     <color name="md_theme_surfaceContainer">#201F20</color>
     <color name="md_theme_surfaceContainerHigh">#2A2A2A</color>
     <color name="md_theme_surfaceContainerHighest">#353435</color>
-    <color name="separator_color">#616161</color>"
+
+    <color name="separator_color">#616161</color>
+    <color name="primary_layer_color">#201F20</color>
     <color name="secondary_layer_color">#141313</color>
+    <color name="note_input_layer_color">#141313</color>
+    <color name="inactive_button_color">#201F20</color>
 </resources>

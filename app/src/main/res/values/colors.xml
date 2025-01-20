@@ -49,6 +49,10 @@
     <color name="md_theme_surfaceContainer">#E0E4ED</color>     <!-- Surface background -->
     <color name="md_theme_surfaceContainerHigh">#EBE7E7</color>
     <color name="md_theme_surfaceContainerHighest">#E5E2E1</color>
-    <color name="separator_color">#C3C3C3</color>"
+
+    <color name="separator_color">#C3C3C3</color>
+    <color name="primary_layer_color">#A5FFFFFF</color>
     <color name="secondary_layer_color">#E6E6EB</color>
+    <color name="note_input_layer_color">#A5FFFFFF</color>
+    <color name="inactive_button_color">#E6E6EB</color>
 </resources>

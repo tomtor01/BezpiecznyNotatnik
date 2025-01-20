@@ -86,8 +86,8 @@ class NoteInputFragment : Fragment() {
                     ContextCompat.getColorStateList(requireContext(), R.color.md_theme_primary) to
                             ContextCompat.getColorStateList(requireContext(), R.color.md_theme_onPrimary)
                 } else {
-                    ContextCompat.getColorStateList(requireContext(), R.color.md_theme_surfaceVariant) to
-                            ContextCompat.getColorStateList(requireContext(), R.color.md_theme_onSurfaceVariant)
+                    ContextCompat.getColorStateList(requireContext(), R.color.inactive_button_color) to
+                            ContextCompat.getColorStateList(requireContext(), R.color.md_theme_inverseOnSurface)
                 }
                 saveButton.backgroundTintList = backgroundTintList
                 saveButton.setTextColor(textColor)

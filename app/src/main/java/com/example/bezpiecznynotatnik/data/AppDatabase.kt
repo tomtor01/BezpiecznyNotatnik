@@ -2,7 +2,7 @@ package com.example.bezpiecznynotatnik.data
 
 import androidx.room.*
 
-@Database(entities = [Note::class], version = 1, exportSchema = false)
+@Database(entities = [Note::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
 }
@@ -10,6 +10,7 @@ abstract class AppDatabase : RoomDatabase() {
 @Entity(tableName = "notes")
 data class Note(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val title: String = "",
     val encryptedMessage: String,
     val iv: String
 )

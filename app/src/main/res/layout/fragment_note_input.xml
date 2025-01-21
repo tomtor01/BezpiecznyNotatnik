@@ -10,19 +10,41 @@
     android:fitsSystemWindows="true"
     tools:ignore="VisualLintMaxWidth">
 
+    <LinearLayout
+        android:id="@+id/note_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/note_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:hint="@string/note_title"
+            android:inputType="text"
+            android:maxLength="40"
+            android:textColor="@color/md_theme_onSurface"
+            android:textColorHint="@color/md_theme_onSurfaceVariant"
+            android:gravity="top"
+            android:padding="12dp"/>
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/messageInput"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:autofillHints=""
         android:textColor="@color/md_theme_onSurface"
-        android:textColorHint="@color/md_theme_onSurface"
+        android:textColorHint="@color/md_theme_onSurfaceVariant"
         android:hint="@string/enter_new_note"
         android:inputType="textMultiLine"
         android:gravity="top"
         android:minHeight="48dp"
         android:padding="12dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/note_title_layout"
         app:layout_constraintBottom_toTopOf="@id/saveButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

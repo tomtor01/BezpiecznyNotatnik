@@ -61,6 +61,8 @@
     <string name="key_invalidated">Klucz biometryczny unieważniony. Wpisz hasło aby wygenerować nowy klucz.</string>
     <string name="feedback">Feedback</string>
     <string name="send_feedback">Podziel się opinią</string>
+    <string name="note_title">Tytuł</string>
+    <string name="untitled">Bez tytułu</string>
     <string-array name="language_names">
         <item>English</item>
         <item>Polski</item>

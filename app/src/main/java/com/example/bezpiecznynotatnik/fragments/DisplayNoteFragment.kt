@@ -23,6 +23,7 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<FrameLayout>
     private lateinit var noteDao: NoteDao
     private var noteId: Int = -1
+    private var noteTitle: String = ""
     private var noteContent: String = ""
 
     override fun onCreateView(
@@ -41,12 +42,15 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
         // Load arguments
         noteDao = (requireActivity().application as SecureNotesApp).noteDatabase.noteDao()
         noteId = arguments?.getInt("noteId") ?: -1
+        noteTitle = arguments?.getString("noteTitle").takeUnless { it.isNullOrEmpty() }
+            ?: getString(R.string.untitled)
         noteContent = arguments?.getString("noteContent") ?: "No content available"
-        arguments = null
 
         // Set note content
-        val textView = view.findViewById<TextView>(R.id.note_content)
-        textView.text = noteContent
+        val titleTextView = view.findViewById<TextView>(R.id.note_title)
+        val contentTextView = view.findViewById<TextView>(R.id.note_content)
+        titleTextView.text = noteTitle
+        contentTextView.text = noteContent
 
         // Initialize BottomSheetBehavior
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -100,7 +104,7 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
             when (menuItem.itemId) {
                 R.id.action_edit -> {
                     val action = NotesFragmentDirections.actionNavDisplayNoteToNavNoteInput(
-                        noteId, noteContent
+                        noteId, noteTitle, noteContent
                     )
                     findNavController().navigate(action)
                     dismiss()

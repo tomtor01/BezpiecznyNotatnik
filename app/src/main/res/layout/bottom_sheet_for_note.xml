@@ -18,22 +18,43 @@
         android:layout_height="?attr/actionBarSize"
         app:menu="@menu/bottom_sheet_toolbar"/>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_marginTop="?attr/actionBarSize">
 
+        <!-- Title -->
         <TextView
-            android:id="@+id/note_content"
+            android:id="@+id/note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            android:textSize="16sp"
             android:padding="8dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:textColor="@color/md_theme_onSurface"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            android:ellipsize="end"
+            android:maxLines="2"
+            tools:text="Sample Note Title" />
 
-    </androidx.core.widget.NestedScrollView>
+        <!-- Scrollable Content -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/note_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:textColor="@color/md_theme_onSurface"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                tools:text="Sample note content goes here." />
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

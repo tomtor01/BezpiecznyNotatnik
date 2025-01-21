@@ -231,7 +231,9 @@ class GoogleDriveBackupManager {
             context,
             AppDatabase::class.java,
             "notes_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     fun signOut(onResult: (Boolean) -> Unit) {

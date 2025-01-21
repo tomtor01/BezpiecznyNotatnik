@@ -13,13 +13,12 @@
             app:destination="@id/nav_noteInput"
             app:popUpTo="@id/nav_notesView"
             app:popUpToInclusive="true" />
-
     </fragment>
+    <!-- Display Note Fragment -->
     <fragment
         android:id="@+id/nav_displayNote"
         android:name="com.example.bezpiecznynotatnik.fragments.DisplayNoteFragment"
         android:label="Display Note">
-
     </fragment>
     <!-- Add Note Fragment -->
     <fragment
@@ -29,6 +28,9 @@
         <argument
             android:name="noteId"
             app:argType="integer" />
+        <argument
+            android:name="noteTitle"
+            app:argType="string" />
         <argument
             android:name="noteContent"
             app:argType="string" />
@@ -42,7 +44,7 @@
             android:id="@+id/action_settings_to_account"
             app:destination="@id/fragment_account" />
     </fragment>
-
+    <!-- Account Fragment -->
     <fragment
         android:id="@+id/fragment_account"
         android:name="com.example.bezpiecznynotatnik.fragments.AccountFragment"

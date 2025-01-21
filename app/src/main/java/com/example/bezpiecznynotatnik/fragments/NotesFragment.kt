@@ -3,8 +3,6 @@ package com.example.bezpiecznynotatnik.fragments
 import com.example.bezpiecznynotatnik.data.NoteDao
 import com.example.bezpiecznynotatnik.R
 import com.example.bezpiecznynotatnik.SecureNotesApp
-import com.example.bezpiecznynotatnik.utils.ByteArrayUtil
-import com.example.bezpiecznynotatnik.utils.EncryptionUtil
 import com.example.bezpiecznynotatnik.adapters.NotesAdapter
 
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
@@ -46,34 +43,16 @@ class NotesFragment : Fragment() {
         lifecycleScope.launch {
             val notes = noteDao.getAllNotes().sortedByDescending { it.id }
 
-            val decryptedNotes = notes.map { note ->
-                try {
-                    EncryptionUtil.decryptMessage(
-                        ByteArrayUtil.fromBase64(note.encryptedMessage),
-                        ByteArrayUtil.fromBase64(note.iv)
-                    )
-                } catch (e: Exception) {
-                    getString(R.string.error_decrypting_note)
-                }
-            }
-
-            adapter = NotesAdapter(
-                decryptedNotes.toMutableList(),
-                notes.toMutableList(),
-                onViewNote = { note ->
-//                    val action = NotesFragmentDirections.actionNavNotesViewToNavEditNote(
-//                        note.id, decryptedNotes[notes.indexOf(note)]
-//                    )
-//                    findNavController().navigate(action)
-                    val displayNoteFragment = DisplayNoteFragment().apply {
-                        arguments = Bundle().apply {
-                            putInt("noteId", note.id)
-                            putString("noteContent", decryptedNotes[notes.indexOf(note)])
-                        }
+            adapter = NotesAdapter(notes) { note, decryptedContent ->
+                val displayNoteFragment = DisplayNoteFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt("noteId", note.id)
+                        putString("noteTitle", note.title)
+                        putString("noteContent", decryptedContent)
                     }
-                    displayNoteFragment.show(parentFragmentManager, "DisplayNoteFragment")
                 }
-            )
+                displayNoteFragment.show(parentFragmentManager, "DisplayNoteFragment")
+            }
 
             recyclerView.adapter = adapter
         }

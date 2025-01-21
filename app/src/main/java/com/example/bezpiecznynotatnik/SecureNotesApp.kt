@@ -31,7 +31,9 @@ class SecureNotesApp : Application() {
             applicationContext,
             AppDatabase::class.java,
             "notes_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
         googleDriveManager = GoogleDriveBackupManager().apply {
             initializeGoogleSignIn(this@SecureNotesApp)
@@ -59,5 +61,4 @@ class SecureNotesApp : Application() {
 
 object UserState {
     var isUserSignedIn: Boolean = false
-    var isBiometricAuthenticationEnabled: Boolean = false
 }

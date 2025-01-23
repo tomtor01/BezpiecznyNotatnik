@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class NotesFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: NotesAdapter
+    private var adapter: NotesAdapter? = null
     private lateinit var noteDao: NoteDao
 
     override fun onCreateView(
@@ -43,7 +43,8 @@ class NotesFragment : Fragment() {
         lifecycleScope.launch {
             val notes = noteDao.getAllNotes().sortedByDescending { it.id }
 
-            adapter = NotesAdapter(notes) { note, decryptedContent ->
+            // Pass the notes to the adapter
+            adapter = NotesAdapter(notes.toCollection(ArrayList())) { note, decryptedContent ->
                 val displayNoteFragment = DisplayNoteFragment().apply {
                     arguments = Bundle().apply {
                         putInt("noteId", note.id)
@@ -57,4 +58,27 @@ class NotesFragment : Fragment() {
             recyclerView.adapter = adapter
         }
     }
+
+//    private fun loadNotes() {
+//        lifecycleScope.launch {
+//            val notes = noteDao.getAllNotes().sortedByDescending { it.id }
+//
+//            adapter = NotesAdapter(
+//                notes.toCollection(ArrayList()),
+//                { note, decryptedContent ->
+//                    // Open the display fragment
+//                    val displayNoteFragment = DisplayNoteFragment().apply {
+//                        arguments = Bundle().apply {
+//                            putInt("noteId", note.id)
+//                            putString("noteTitle", note.title)
+//                            putString("noteContent", decryptedContent)
+//                        }
+//                    }
+//                    displayNoteFragment.show(parentFragmentManager, "DisplayNoteFragment")
+//                },
+//                { serializedContent -> loadRichContent(serializedContent) } // Pass the rich content loader
+//            )
+//            recyclerView.adapter = adapter
+//        }
+//    }
 }

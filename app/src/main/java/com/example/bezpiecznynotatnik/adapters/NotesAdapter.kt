@@ -2,17 +2,18 @@ package com.example.bezpiecznynotatnik.adapters
 
 import com.example.bezpiecznynotatnik.data.Note
 import com.example.bezpiecznynotatnik.R
+import com.example.bezpiecznynotatnik.utils.ByteArrayUtil
+import com.example.bezpiecznynotatnik.utils.EncryptionUtil
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bezpiecznynotatnik.utils.ByteArrayUtil
-import com.example.bezpiecznynotatnik.utils.EncryptionUtil
 
 class NotesAdapter(
-    private val notes: List<Note>, // Single list of Note objects
+    private val notes: ArrayList<Note>,
     private val onViewNote: (Note, String) -> Unit // Pass both Note and decrypted content
 ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
@@ -53,7 +54,8 @@ class NotesAdapter(
             textTitle.text = title.ifEmpty {
                 itemView.context.getString(R.string.untitled)
             }
-            textContent.text = content
+            // Use Html.fromHtml to render formatted text
+            textContent.text = HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.example.bezpiecznynotatnik.fragments
 
+import com.example.bezpiecznynotatnik.R
+import com.example.bezpiecznynotatnik.SecureNotesApp
+import com.example.bezpiecznynotatnik.data.NoteDao
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +12,9 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.bezpiecznynotatnik.R
-import com.example.bezpiecznynotatnik.SecureNotesApp
-import com.example.bezpiecznynotatnik.data.NoteDao
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -42,21 +44,17 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
         // Load arguments
         noteDao = (requireActivity().application as SecureNotesApp).noteDatabase.noteDao()
         noteId = arguments?.getInt("noteId") ?: -1
-        noteTitle = arguments?.getString("noteTitle").takeUnless { it.isNullOrEmpty() }
-            ?: getString(R.string.untitled)
+        noteTitle = arguments?.getString("noteTitle").takeUnless { it.isNullOrEmpty() } ?: getString(R.string.untitled)
         noteContent = arguments?.getString("noteContent") ?: "No content available"
 
-        // Set note content
         val titleTextView = view.findViewById<TextView>(R.id.note_title)
         val contentTextView = view.findViewById<TextView>(R.id.note_content)
         titleTextView.text = noteTitle
-        contentTextView.text = noteContent
+        contentTextView.text = HtmlCompat.fromHtml(noteContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-        // Initialize BottomSheetBehavior
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         setupBottomSheetBehavior()
 
-        // Setup toolbar actions
         setupToolbar(toolbar)
     }
 
@@ -68,20 +66,16 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
 
             // Allow the sheet to expand to fullscreen
             isFitToContents = true
-            skipCollapsed = false
-            isHideable = true // Allow hiding if necessary
+            skipCollapsed = true
+            isHideable = true
             expandedOffset = 0 // Fullscreen when expanded
 
             // Optional: Listen for state changes
             addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
-                        BottomSheetBehavior.STATE_EXPANDED -> {
-                            // Perform actions when expanded
-                        }
-                        BottomSheetBehavior.STATE_COLLAPSED -> {
-                            // Perform actions when collapsed
-                        }
+                        BottomSheetBehavior.STATE_EXPANDED -> {}
+                        BottomSheetBehavior.STATE_COLLAPSED -> {}
                         BottomSheetBehavior.STATE_HIDDEN -> {
                             dismiss() // Dismiss fragment if hidden
                         }
@@ -94,12 +88,10 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
             })
         }
     }
-
     private fun setupToolbar(toolbar: MaterialToolbar) {
         toolbar.setNavigationOnClickListener {
             dismiss()
         }
-
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_edit -> {
@@ -111,7 +103,6 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
                     true
                 }
                 R.id.action_delete -> {
-                    // Show delete confirmation dialog
                     showDeleteConfirmationDialog()
                     false
                 }
@@ -133,15 +124,12 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
     private fun deleteNote() {
         lifecycleScope.launch {
             try {
-                // Perform the database deletion
                 noteDao.deleteById(noteId)
 
-                // Show success message and navigate back
                 if (isAdded) {
                     Toast.makeText(requireContext(), getString(R.string.note_deleted), Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.nav_notesView)
                 }
-                // Dismiss the bottom sheet
                 dismiss()
             } catch (e: Exception) {
                 if (isAdded) {

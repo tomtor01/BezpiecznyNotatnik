@@ -54,6 +54,7 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             resources.pickFirsts += "/META-INF/DEPENDENCIES"
+            resources.pickFirsts += "/META-INF/INDEX.LIST"
         }
     }
 }
@@ -64,36 +65,47 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.coordinatorlayout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.biometric.ktx)
+
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.support.annotations)
+    implementation(libs.glide)
+
+    // material/graphics libs
+    implementation(libs.androidx.ui.graphics.android)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.graphics.android)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.biometric.ktx)
     implementation(libs.material)
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.support.annotations)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.coordinatorlayout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.ui.graphics.android)
-    implementation(libs.androidx.work.runtime.ktx)
+
+    // firebase libs
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.ui.auth)
     implementation(libs.firebase.auth)
     implementation(platform(libs.firebase.bom))
+
+    // google authentication libs
     implementation(libs.play.services.auth)
     implementation(libs.google.api.client.android)
     implementation(libs.google.api.services.drive)
     implementation(libs.google.api.client)
     implementation(libs.google.oauth.client.jetty)
     implementation(libs.google.auth.library.oauth2.http)
-    implementation(libs.glide)
-    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+
     annotationProcessor(libs.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

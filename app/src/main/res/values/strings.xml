@@ -64,6 +64,9 @@
     <string name="send_feedback">Give feedback</string>
     <string name="note_title">Title</string>
     <string name="untitled">Untitled</string>
+    <string name="bold_button_content_description">material_button_bold</string>
+    <string name="italic_button_content_description">material button italic</string>
+    <string name="underlined_button_content_description">material button underlined</string>
     <string-array name="language_names">
         <item>English</item>
         <item>Polski</item>

@@ -4,6 +4,7 @@ import com.example.bezpiecznynotatnik.utils.LocaleHelper
 import com.example.bezpiecznynotatnik.utils.PreferenceHelper
 import com.example.bezpiecznynotatnik.data.AppDatabase
 import com.example.bezpiecznynotatnik.utils.LogoutWorker
+import com.example.bezpiecznynotatnik.data.GoogleDriveBackupManager
 
 import android.app.Application
 import android.content.Context
@@ -11,7 +12,6 @@ import android.util.Log
 import androidx.room.Room
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.bezpiecznynotatnik.data.GoogleDriveBackupManager
 
 import java.util.concurrent.TimeUnit
 

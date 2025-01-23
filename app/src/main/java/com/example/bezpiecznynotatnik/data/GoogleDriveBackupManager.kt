@@ -2,18 +2,22 @@ package com.example.bezpiecznynotatnik.data
 
 import com.example.bezpiecznynotatnik.R
 import com.example.bezpiecznynotatnik.SecureNotesApp
+import com.example.bezpiecznynotatnik.UserState
 
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.room.Room
-import com.example.bezpiecznynotatnik.UserState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -82,6 +86,16 @@ class GoogleDriveBackupManager {
             onFailure("Google Sign-In failed: ${e.message}")
         }
     }
+    fun getSignedInUserToken(context: Context): String? {
+        val googleAccount = GoogleSignIn.getLastSignedInAccount(context)
+        return googleAccount?.idToken
+    }
+
+    fun getSignedInUserEmail(context: Context): String {
+        val googleAccount = GoogleSignIn.getLastSignedInAccount(context)
+        return googleAccount?.email ?: context.getString(R.string.user)
+    }
+
     fun getSignedInUserName(context: Context): String {
         val googleAccount = GoogleSignIn.getLastSignedInAccount(context)
         return googleAccount?.displayName ?: context.getString(R.string.user)
@@ -122,7 +136,6 @@ class GoogleDriveBackupManager {
             uploadFileToDrive(shmPath, "notes_db-shm")
             uploadFileToDrive(walPath, "notes_db-wal")
 
-            Log.d("GoogleDriveManager", "All database files uploaded successfully!")
         } catch (e: Exception) {
             Log.e("GoogleDriveManager", "Error uploading database files: ${e.message}")
             throw e
@@ -138,7 +151,6 @@ class GoogleDriveBackupManager {
             withContext(Dispatchers.IO) {
                 driveService!!.files().update(existingFileId, null, fileContent).execute()
             }
-            Log.d("GoogleDriveManager", "File $fileName updated successfully on Google Drive.")
         } else {
             // Create a new file
             val metadata = com.google.api.services.drive.model.File().setName(fileName)
@@ -146,7 +158,6 @@ class GoogleDriveBackupManager {
             withContext(Dispatchers.IO) {
                 driveService!!.files().create(metadata, fileContent).execute()
             }
-            Log.d("GoogleDriveManager", "File $fileName created successfully on Google Drive.")
         }
     }
 
@@ -164,7 +175,6 @@ class GoogleDriveBackupManager {
             downloadFileFromDrive("notes_db-wal")?.copyTo(walPath, overwrite = true)
 
             reloadDatabase(context)
-            Log.d("GoogleDriveManager", "Database restored successfully!")
         } catch (e: Exception) {
             Log.e("GoogleDriveManager", "Error restoring database files: ${e.message}")
             throw e
@@ -240,9 +250,77 @@ class GoogleDriveBackupManager {
         googleSignInClient!!.signOut().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 onResult(true)
-
+                UserState.isUserSignedIn = false
             } else {
                 onResult(false)
+            }
+        }
+    }
+}
+
+object GoogleSignInManager {
+
+    private lateinit var credentialManager: CredentialManager
+
+    suspend fun googleSignIn(
+        context: Context,
+        clientId: String,
+        filterByAuthorizedAccounts: Boolean,
+        doOnSuccess: (String) -> Unit,
+        doOnError: (Exception) -> Unit,
+    ) {
+        if (::credentialManager.isInitialized.not()) {
+            credentialManager = CredentialManager
+                .create(context)
+        }
+
+        val googleIdOption: GetGoogleIdOption = GetGoogleIdOption
+            .Builder()
+            .setFilterByAuthorizedAccounts(true)
+            .setServerClientId(clientId)
+            .setAutoSelectEnabled(false)
+            .build()
+
+        val request: GetCredentialRequest = GetCredentialRequest
+            .Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        requestSignIn(
+            context,
+            request,
+            clientId,
+            filterByAuthorizedAccounts,
+            doOnSuccess,
+            doOnError
+        )
+    }
+
+    private suspend fun requestSignIn(
+        context: Context,
+        request: GetCredentialRequest,
+        clientId: String,
+        filterByAuthorizedAccounts: Boolean,
+        doOnSuccess: (String) -> Unit,
+        doOnError: (Exception) -> Unit,
+    ) {
+        try {
+            val result = credentialManager.getCredential(
+                request = request,
+                context = context,
+            )
+            doOnSuccess("")
+        } catch (e: Exception){
+            if (e is NoCredentialException && filterByAuthorizedAccounts) {
+                googleSignIn(
+                    context,
+                    clientId,
+                    false,
+                    doOnSuccess,
+                    doOnError
+                )
+            } else {
+                doOnError(e)
             }
         }
     }

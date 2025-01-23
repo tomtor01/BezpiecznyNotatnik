@@ -1,6 +1,4 @@
 <resources>
-    <color name="ripple_color">#3A3B3E</color>"
-    <color name="ripple_mask_color">#3A3B3E</color>
     <color name="md_theme_primary">#A2C9FF</color>
     <color name="md_theme_onPrimary">#00315C</color>
     <color name="md_theme_primaryContainer">#0076CF</color>
@@ -54,4 +52,6 @@
     <color name="secondary_layer_color">#141313</color>
     <color name="note_input_layer_color">#141313</color>
     <color name="inactive_button_color">#201F20</color>
+    <color name="ripple_color">#3A3B3E</color>
+    <color name="ripple_mask_color">#3A3B3E</color>
 </resources>

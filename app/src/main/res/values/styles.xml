@@ -66,4 +66,8 @@
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="ToolbarDeleteButtonStyle" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">@color/md_theme_error</item>
+    </style>
 </resources>

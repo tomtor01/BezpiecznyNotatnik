@@ -1,7 +1,19 @@
 package com.example.bezpiecznynotatnik.fragments
 
+import com.example.bezpiecznynotatnik.R
+import com.example.bezpiecznynotatnik.SecureNotesApp
+import com.example.bezpiecznynotatnik.data.Note
+import com.example.bezpiecznynotatnik.data.NoteDao
+import com.example.bezpiecznynotatnik.utils.ByteArrayUtil
+import com.example.bezpiecznynotatnik.utils.EncryptionUtil
+import com.example.bezpiecznynotatnik.utils.RichEditText
+
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,25 +23,29 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.bezpiecznynotatnik.R
-import com.example.bezpiecznynotatnik.SecureNotesApp
-import com.example.bezpiecznynotatnik.data.Note
-import com.example.bezpiecznynotatnik.data.NoteDao
-import com.example.bezpiecznynotatnik.utils.ByteArrayUtil
-import com.example.bezpiecznynotatnik.utils.EncryptionUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class NoteInputFragment : Fragment() {
 
     private lateinit var noteTitleInput: EditText
-    private lateinit var noteInput: EditText
+    private lateinit var noteInput: RichEditText
     private lateinit var saveButton: Button
     private lateinit var noteDao: NoteDao
+
+    private lateinit var buttonBold: Button
+    private lateinit var buttonItalic: Button
+    private lateinit var buttonUnderline: Button
 
     private var noteId: Int = -1
     private var originalNoteTitle: String = ""
@@ -43,8 +59,11 @@ class NoteInputFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_note_input, container, false)
 
         noteTitleInput = view.findViewById(R.id.note_title)
-        noteInput = view.findViewById(R.id.messageInput)
+        noteInput = view.findViewById(R.id.noteInput)
         saveButton = view.findViewById(R.id.saveButton)
+        buttonBold = view.findViewById(R.id.floating_toolbar_button_bold)
+        buttonItalic = view.findViewById(R.id.floating_toolbar_button_italic)
+        buttonUnderline = view.findViewById(R.id.floating_toolbar_button_underlined)
         noteDao = (requireActivity().application as SecureNotesApp).noteDatabase.noteDao()
 
         // Load arguments
@@ -52,14 +71,18 @@ class NoteInputFragment : Fragment() {
         originalNoteTitle = arguments?.getString("noteTitle") ?: ""
         originalNoteContent = arguments?.getString("noteContent") ?: ""
 
-        if (noteId != 0) {
-            // Editing an existing note
-            noteTitleInput.setText(originalNoteTitle)
-            noteInput.setText(originalNoteContent)
-        }
         setupTextWatcher()
-        setupSaveButton()
+
+        if (noteId != 0) {
+            noteTitleInput.setText(originalNoteTitle)
+            noteInput.setText(loadRichContent(originalNoteContent))
+        }
+
+        saveButton.setOnClickListener {
+            saveNote()
+        }
         updateSaveButtonState()
+        setupFormattingButtons()
 
         // Adjust padding for soft keyboard
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
@@ -70,28 +93,41 @@ class NoteInputFragment : Fragment() {
         return view
     }
 
-    private fun setupSaveButton() {
-        saveButton.setOnClickListener {
-            Log.d("NoteInputFragment", "Save button clicked with noteId: $noteId")
-            if (noteId == 0) {
-                saveNote() // Add new note
-            } else {
-                updateNote() // Update existing note
-            }
+    private fun setupFormattingButtons() {
+        buttonBold.setOnClickListener {
+            noteInput.toggleBold()
+            updateButtonStates()
         }
+
+        buttonItalic.setOnClickListener {
+            noteInput.toggleItalic()
+            updateButtonStates()
+        }
+
+        buttonUnderline.setOnClickListener {
+            noteInput.toggleUnderline()
+            updateButtonStates()
+        }
+
+        noteInput.setOnSelectionChangedListener {
+            updateButtonStates()
+        }
+    }
+
+    private fun updateButtonStates() {
+        buttonBold.isSelected = noteInput.isBold()
+        buttonItalic.isSelected = noteInput.isItalic()
+        buttonUnderline.isSelected = noteInput.isUnderline()
     }
 
     private fun setupTextWatcher() {
         val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateSaveButtonState()
             }
             override fun afterTextChanged(s: Editable?) {}
         }
-
         noteTitleInput.addTextChangedListener(textWatcher)
         noteInput.addTextChangedListener(textWatcher)
     }
@@ -113,7 +149,6 @@ class NoteInputFragment : Fragment() {
             (titleChanged || contentChanged) && currentContent.isNotEmpty() // Editing a note
         }
 
-        // Update button appearance based on state
         val (backgroundTintList, textColor) = if (saveButton.isEnabled) {
             ContextCompat.getColorStateList(requireContext(), R.color.md_theme_primary) to
                     ContextCompat.getColorStateList(requireContext(), R.color.md_theme_onPrimary)
@@ -125,49 +160,67 @@ class NoteInputFragment : Fragment() {
         saveButton.setTextColor(textColor)
     }
 
+    private fun saveRichContent(spannable: Spannable): String {
+        return HtmlCompat.toHtml(spannable, HtmlCompat.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+    }
+
+    private fun loadRichContent(htmlContent: String): Spannable {
+        val spannable = SpannableStringBuilder(
+            HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, { source ->
+                // Use CompletableDeferred to handle asynchronous image loading
+                val drawableFuture = CompletableDeferred<Drawable?>()
+                Glide.with(requireContext())
+                    .asDrawable()
+                    .load(source)
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            resource.setBounds(0, 0, resource.intrinsicWidth, resource.intrinsicHeight)
+                            drawableFuture.complete(resource)
+                        }
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            drawableFuture.complete(null) // Fallback in case of failure
+                        }
+                    })
+                runBlocking {
+                    try {
+                        drawableFuture.await() // Await the drawable in a coroutine context
+                    } catch (e: Exception) {
+                        null // Return null if the drawable fails to load
+                    }
+                }
+            }, null)
+        )
+
+        return spannable
+    }
 
     private fun saveNote() {
-        val title = noteTitleInput.text.toString()
-        val newNote = noteInput.text.toString()
+        val title = noteTitleInput.text.toString().trim()
+        val noteContentHtml = saveRichContent(noteInput.text ?: SpannableString(""))
+
         lifecycleScope.launch {
             try {
-                val (encryptedMessage, iv) = EncryptionUtil.encryptMessage(newNote)
+                val (encryptedMessage, iv) = EncryptionUtil.encryptMessage(noteContentHtml)
+                // Create a new Note object
                 val note = Note(
-                    id = 0,
+                    id = noteId,
                     title = title,
                     encryptedMessage = ByteArrayUtil.toBase64(encryptedMessage),
                     iv = ByteArrayUtil.toBase64(iv)
                 )
-                noteDao.insert(note)
+                if (noteId == 0) {
+                    noteDao.insert(note)
+                }
+                else {
+                    noteDao.update(note)
+                }
 
                 Toast.makeText(requireContext(), getString(R.string.note_added), Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
+
             } catch (e: Exception) {
-                Log.e("NoteFragment", "Error adding note: ${e.message}")
+                Log.e("NoteInputFragment", "Error saving note: ${e.message}", e)
                 Toast.makeText(requireContext(), getString(R.string.add_note_failure), Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun updateNote() {
-        val updatedTitle = noteTitleInput.text.toString()
-        val updatedContent = noteInput.text.toString()
-        lifecycleScope.launch {
-            try {
-                val (encryptedMessage, iv) = EncryptionUtil.encryptMessage(updatedContent)
-                val updatedNote = Note(
-                    id = noteId,
-                    title = updatedTitle,
-                    encryptedMessage = ByteArrayUtil.toBase64(encryptedMessage),
-                    iv = ByteArrayUtil.toBase64(iv)
-                )
-                noteDao.update(updatedNote)
-
-                Toast.makeText(requireContext(), getString(R.string.note_updated), Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.nav_notesView)
-            } catch (e: Exception) {
-                Log.e("NoteFragment", "Error updating note: ${e.message}")
-                Toast.makeText(requireContext(), getString(R.string.save_note_failure), Toast.LENGTH_SHORT).show()
             }
         }
     }

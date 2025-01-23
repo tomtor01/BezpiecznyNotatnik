@@ -8,6 +8,10 @@ import com.example.bezpiecznynotatnik.utils.ByteArrayUtil
 import com.example.bezpiecznynotatnik.utils.EncryptionUtil
 import com.example.bezpiecznynotatnik.utils.RichEditText
 
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -29,9 +33,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

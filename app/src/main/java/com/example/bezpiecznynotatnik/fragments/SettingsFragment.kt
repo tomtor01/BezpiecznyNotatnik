@@ -82,10 +82,8 @@ class SettingsFragment : Fragment() {
             onSignInClick = { signInLauncher.launch(googleDriveManager.getSignInIntent()) },
             onProfileClick = { findNavController().navigate(R.id.action_settings_to_account, null, navOptions) },
             onChangePasswordClick = { showChangePasswordDialog() },
-            onFeedbackButtonClick = { },
             onLanguageSelected = { index -> selectedLanguageIndex = index },
             onApplyLanguageClick = { index -> applySelectedLanguage(index) },
-            onBiometricSwitchToggled = { isEnabled -> toggleBiometricAuthentication(isEnabled) },
             sharedPreferences = sharedPrefs
         )
 
@@ -152,16 +150,6 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun toggleBiometricAuthentication(isEnabled: Boolean) {
-        if (isEnabled) {
-            // Enable biometric authentication logic
-            Toast.makeText(requireContext(), "Biometric authentication enabled", Toast.LENGTH_SHORT).show()
-        } else {
-            // Disable biometric authentication logic
-            Toast.makeText(requireContext(), "Biometric authentication disabled", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private fun showChangePasswordDialog() {
         val dialogTheme = R.style.AppTheme_Dialog
 
@@ -190,7 +178,7 @@ class SettingsFragment : Fragment() {
                         ).show()
                         newPasswordInput.text.clear()
                         repeatPasswordInput.text.clear()
-                    } else {    // on success
+                    } else {    // On success
                         changePassword(requireContext(), newPassword)
                         dialog.dismiss()
                     }

@@ -17,17 +17,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.materialswitch.MaterialSwitch
-import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsAdapter(
     private val settings: List<SettingItem>,
     private val onSignInClick: () -> Unit,
     private val onProfileClick: () -> Unit,
     private val onChangePasswordClick: () -> Unit,
-    private val onFeedbackButtonClick: () -> Unit,
     private val onLanguageSelected: (Int) -> Unit,
     private val onApplyLanguageClick: (Int) -> Unit,
-    private val onBiometricSwitchToggled: (Boolean) -> Unit,
     private val sharedPreferences: SharedPreferences
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -55,9 +52,9 @@ class SettingsAdapter(
         val item = settings[position]
         when (holder) {
             is AccountViewHolder -> holder.bind(item, onSignInClick, onProfileClick)
-            is AuthViewHolder -> holder.bind(item, onChangePasswordClick, onBiometricSwitchToggled)
+            is AuthViewHolder -> holder.bind(item, onChangePasswordClick)
             is LanguageViewHolder -> holder.bind(item, onLanguageSelected, onApplyLanguageClick)
-            is FeedbackViewHolder -> holder.bind(item, onFeedbackButtonClick)
+            is FeedbackViewHolder -> holder.bind(item)
         }
     }
 
@@ -110,8 +107,7 @@ class SettingsAdapter(
         private val biometricSwitch: MaterialSwitch = itemView.findViewById(R.id.biometric_switch)
 
         fun bind(settingItem: SettingItem,
-                 onChangePasswordClick: () -> Unit,
-                 onBiometricSwitchToggled: (Boolean) -> Unit)
+                 onChangePasswordClick: () -> Unit)
         {
             passwordTextView.text = settingItem.title
             changePasswordButton.text = settingItem.buttonLabel
@@ -123,7 +119,6 @@ class SettingsAdapter(
             biometricSwitch.isChecked = isBiometricEnabled
 
             biometricSwitch.setOnCheckedChangeListener { _, isChecked ->
-                onBiometricSwitchToggled(isChecked)
                 sharedPreferences.edit().putBoolean("biometric_enabled", isChecked).apply()
             }
         }
@@ -162,7 +157,6 @@ class SettingsAdapter(
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
-            // Handle apply button click
             applyButton.setOnClickListener {
                 val selectedPosition = languageSpinner.selectedItemPosition
                 onApplyLanguageClick(selectedPosition)
@@ -174,8 +168,7 @@ class SettingsAdapter(
         private val feedbackTextView: TextView = itemView.findViewById(R.id.feedback_text_view)
         private val feedbackButton: Button = itemView.findViewById(R.id.feedback_button)
 
-        fun bind(settingItem: SettingItem,
-                 onFeedbackButtonClick: () -> Unit) {
+        fun bind(settingItem: SettingItem) {
             feedbackTextView.text = settingItem.title
             feedbackButton.text = settingItem.buttonLabel
         }

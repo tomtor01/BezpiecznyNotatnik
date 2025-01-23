@@ -4,6 +4,10 @@ import com.example.bezpiecznynotatnik.R
 import com.example.bezpiecznynotatnik.SecureNotesApp
 import com.example.bezpiecznynotatnik.data.NoteDao
 
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +19,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 
 class DisplayNoteFragment : BottomSheetDialogFragment() {

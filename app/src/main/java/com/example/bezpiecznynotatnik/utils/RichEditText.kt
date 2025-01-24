@@ -1,5 +1,9 @@
 package com.example.bezpiecznynotatnik.utils
 
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -19,9 +23,7 @@ import android.view.inputmethod.InputConnectionWrapper
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.text.getSpans
 import androidx.core.view.inputmethod.EditorInfoCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import androidx.core.view.inputmethod.InputConnectionCompat
 
 
 class RichEditText @JvmOverloads constructor(
@@ -34,17 +36,17 @@ class RichEditText @JvmOverloads constructor(
     private var isUnderlineActive = false
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection {
-        val inputConnection = super.onCreateInputConnection(outAttrs)
+        var inputConnection = super.onCreateInputConnection(outAttrs)
 
         // Declare supported MIME types
         val mimeTypes = arrayOf("image/gif", "image/png", "image/jpeg", "image/webp")
         EditorInfoCompat.setContentMimeTypes(outAttrs, mimeTypes)
 
-//        // Wrap input connection for commitContent compatibility
-//        inputConnection = RichInputConnectionWrapper(inputConnection, true, this)
-//        inputConnection = InputConnectionCompat.createWrapper(this, inputConnection, outAttrs)
+        // Wrap input connection for commitContent compatibility
+        inputConnection = RichInputConnectionWrapper(inputConnection, true, this)
+        inputConnection = InputConnectionCompat.createWrapper(this, inputConnection, outAttrs)
 
-        return RichInputConnectionWrapper(inputConnection, true, this)
+        return inputConnection
     }
 
     fun toggleBold() {

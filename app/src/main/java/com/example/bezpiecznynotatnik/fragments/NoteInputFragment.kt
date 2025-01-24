@@ -162,12 +162,12 @@ class NoteInputFragment : Fragment() {
     }
 
     private fun saveRichContent(spannable: Spannable): String {
-        return HtmlCompat.toHtml(spannable, HtmlCompat.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+        return HtmlCompat.toHtml(spannable, HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE)
     }
 
     private fun loadRichContent(htmlContent: String): Spannable {
         val spannable = SpannableStringBuilder(
-            HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, { source ->
+            HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_COMPACT, { source ->
                 // Use CompletableDeferred to handle asynchronous image loading
                 val drawableFuture = CompletableDeferred<Drawable?>()
                 Glide.with(requireContext())
@@ -191,7 +191,6 @@ class NoteInputFragment : Fragment() {
                 }
             }, null)
         )
-
         return spannable
     }
 

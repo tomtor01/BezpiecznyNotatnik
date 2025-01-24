@@ -51,7 +51,7 @@ class DisplayNoteFragment : BottomSheetDialogFragment() {
         val titleTextView = view.findViewById<TextView>(R.id.note_title)
         val contentTextView = view.findViewById<TextView>(R.id.note_content)
         titleTextView.text = noteTitle
-        contentTextView.text = HtmlCompat.fromHtml(noteContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        contentTextView.text = HtmlCompat.fromHtml(noteContent, HtmlCompat.FROM_HTML_MODE_COMPACT).trimEnd()
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         setupBottomSheetBehavior()

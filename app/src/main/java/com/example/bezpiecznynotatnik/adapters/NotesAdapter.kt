@@ -54,8 +54,7 @@ class NotesAdapter(
             textTitle.text = title.ifEmpty {
                 itemView.context.getString(R.string.untitled)
             }
-            // Use Html.fromHtml to render formatted text
-            textContent.text = HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            textContent.text = HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT).trimEnd()
         }
     }
 }

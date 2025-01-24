@@ -2,6 +2,7 @@ package com.example.bezpiecznynotatnik.utils
 
 import android.content.Context
 import android.content.res.Configuration
+
 import java.util.Locale
 
 object LocaleHelper {

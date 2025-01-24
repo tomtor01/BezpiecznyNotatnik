@@ -3,12 +3,13 @@ package com.example.bezpiecznynotatnik.utils
 import com.example.bezpiecznynotatnik.R
 
 import android.widget.Toast
-import java.security.MessageDigest
-import java.security.SecureRandom
 import android.content.SharedPreferences
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.ContextCompat.getString
+
+import java.security.MessageDigest
+import java.security.SecureRandom
 
 private lateinit var sharedPrefs: SharedPreferences
 

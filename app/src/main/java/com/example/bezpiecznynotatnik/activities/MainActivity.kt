@@ -8,6 +8,8 @@ import com.example.bezpiecznynotatnik.utils.ByteArrayUtil.fromBase64
 import com.example.bezpiecznynotatnik.data.NoteDao
 import com.example.bezpiecznynotatnik.data.GoogleDriveBackupManager
 
+import com.google.firebase.auth.FirebaseAuth
+
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -31,7 +33,6 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 import java.util.Locale
